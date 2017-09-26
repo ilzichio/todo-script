@@ -6,11 +6,11 @@ You can run "bash install.sh" and it'll automatically "install" todo.sh script (
 <p>How to use script: <br>
 <hr>
 In order to display your todo list, type "bash todo.sh"</p>
-<p>If you want to add entries to your list: type "bash todo.sh add <code><your entries followed by each other, written in double brackets></code></p><br>
+<p>If you want to add entries to your list: type "bash todo.sh add <code>&lt;your entries followed by each other, written in double brackets&gt;</code></p><br>
 Example:<br> 
 <code>> bash todo.sh add "buy milk" "read 15 pages" "feed a cat"</code>
 <p>There is no limitations in number of entries you add</p>
-<p>Then there is a need to delete tasks (deleted tasks automatically append to yourdone-list) type "bash todo.sh del <code>&lt;order numbers of tasks/&gt;</code><br>
+<p>Then there is a need to delete tasks (deleted tasks automatically append to yourdone-list) type "bash todo.sh del <code>&lt;order numbers of tasks&gt;</code><br>
 Example:</p><br>
 <pre>> bash todo.sh<br>
 > ---------------------------- <br>
