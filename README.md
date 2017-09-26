@@ -10,7 +10,7 @@ In order to display your todo list, type "bash todo.sh"</p>
 Example:<br> 
 <code>> bash todo.sh add "buy milk" "read 15 pages" "feed a cat"</code>
 <p>There is no limitations in number of entries you add</p>
-<p>Then there is a need to delete tasks (deleted tasks automatically append to yourdone-list) type "bash todo.sh del <order numbers of tasks><br>
+<p>Then there is a need to delete tasks (deleted tasks automatically append to yourdone-list) type "bash todo.sh del <code>&lt;order numbers of tasks/&gt;</code><br>
 Example:</p><br>
 <pre>> bash todo.sh<br>
 > ---------------------------- <br>
