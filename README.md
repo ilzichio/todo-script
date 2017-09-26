@@ -7,7 +7,7 @@ You can run "bash install.sh" and it'll automatically "install" todo.sh script (
 <p>How to use script: <br>
 In order to display your todo list, type "bash todo.sh"</p>
 <hr>
-<p>If you want to add entries to your list type "bash todo.sh add <your entries followed by each other, written in double brackets></p><br>
+<p>If you want to add entries to your list: type "bash todo.sh add <code><your entries followed by each other, written in double brackets></code></p><br>
 Example:<br> 
 <code>> bash todo.sh add "buy milk" "read 15 pages" "feed a cat"</code>
 <p>There is no limitations in number of entries you add</p>
