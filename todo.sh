@@ -21,7 +21,8 @@ scan-option ()
 		"") display-todo;;
 		add) shift; add-entries "$@";;
 		del) shift; del-entries "$@";;
-		done) display-done;; help) get-help;; esac
+		done) display-done;; 
+		help) get-help;; esac
 }
 number-of-lines () # takes file ($1) and writes it to $number_of_lines
 {
