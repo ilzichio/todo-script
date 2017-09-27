@@ -21,9 +21,8 @@ scan-option ()
 		"") display-todo;;
 		add) shift; add-entries "$@";;
 		del) shift; del-entries "$@";;
-		done) display-done;;
-		help) get-help;;
-	esac
+		done) display-done;; 
+		help) get-help;; esac
 }
 number-of-lines () # takes file ($1) and writes it to $number_of_lines
 {
@@ -189,45 +188,81 @@ add-entries ()
 }
 #--------------------------------------------------
 ####DEL OPTION####
-construct-pattern ()
+count-arguments ()
 {
-	touch pattern_file
-	for n in $@; do
-		n-line $todofile $n
-		pattern=$nline
-		echo -n $pattern >> pattern_file
-		echo -n "\|" >> pattern_file
+	nargs=0
+	for n in "$@"
+	do
+		nargs=$((nargs+1))
 	done
-	touch p
-	echo -n "" > p
-	cat pattern_file | sed 's/.$//' | sed 's/.$//' | cat > p
-	pattern=$(cat p)
 }
 
-append-deleted-lines-to-done ()
+construct-array ()
 {
-	cat $todofile | grep "$pattern" | cat >> $donefile
+	i=1
+	for de in "$@"
+	do
+		dels[$i]=$de
+		i=$((i+1))
+	done
 }
 
-delete-lines ()
+argument-in-array? ()
 {
-	touch f
-	cat $todofile | grep -v "$pattern" | cat > f
-	cat f | cat > $todofile
-	rm f
-	rm pattern_file
-	rm p
+	argument=$1
+	switch_aia=false
+	for i in `seq 1 $nargs`
+	do
+		array_value=${dels[i]}
+		if [ $argument = $array_value ]
+		then	
+			switch_aia=true
+		fi
+	done
+}
+
+append-deleted-tasks-to-done ()
+{
+	number-of-lines $todofile
+	for task in "$@"
+	do
+		if [ "$task" -le "$number_of_lines" ] && [ "$task" != "0" ]
+		then
+			n-line $todofile $task
+			echo "$nline" >> $donefile
+		fi
+	done
+}
+
+delete-tasks ()
+{
+	touch tmp
+	number-of-lines $todofile
+	for task in `seq 1 $number_of_lines`
+	do
+		argument-in-array? $task	
+		if [ "$switch_aia" = "false" ] && [ "$task" -le "$number_of_lines" ] && [ "$task" != "0" ]
+		then
+			n-line $todofile $task
+			echo "$nline" >> tmp	
+		fi
+	done
+	echo -n "" > $todofile
+	cat tmp > $todofile
+	rm tmp
 }
 
 del-entries ()
 {
-	construct-pattern "$@"
-	append-deleted-lines-to-done
-	delete-lines
+	count-arguments "$@"
+	construct-array "$@"
+	append-deleted-tasks-to-done "$@"
+	delete-tasks
 }
 #--------------------------------------------------
 ####HELP OPTION####
 #--------------------------------------------------
+
 get-help ()
 {
 	echo "This is TODO programm, written by Ilzichio"
