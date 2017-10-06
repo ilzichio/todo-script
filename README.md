@@ -1,5 +1,5 @@
 This is a small and simple TODO script written in Bash.
-<img src="http://w1r3.net/RqyQNN.gif">
+<img src="script_in_action.gif">
 <p>
 Installation: <br>
 You can run "bash install.sh" and it'll automatically "install" todo.sh script (it's not a real installation thought, the script just adds aliases for todo-file, done-file, and your todo.sh script, so you can invoke it by simply typing "todo <code>&lt;command&gt;</code>" in the terminal)</p><br>
