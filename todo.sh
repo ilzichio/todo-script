@@ -5,7 +5,7 @@
 todofile=$TODO_FILE
 donefile=$DONE_FILE
 #
-# Todo-list's appearance
+# Todo-list's appearance (change them however you want)
 spaces=1 
 horizontal_line_character="~"
 open_brackets="{"
