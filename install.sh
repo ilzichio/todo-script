@@ -14,6 +14,10 @@ add ()
 	echo -n "$3" >> $bashrc
 	echo '"' >> $bashrc
 }
+touch $dir/todo
+echo "Todo file created"
+touch $dir/done
+echo "Done file created"
 add "export" "TODO_FILE" "$dir/todo"
 echo 'variable $TODO_FILE added to your .bashrc'
 add "export" "DONE_FILE" "$dir/done"

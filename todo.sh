@@ -6,10 +6,10 @@ todofile=$TODO_FILE
 donefile=$DONE_FILE
 #
 # Todo-list's appearance
-spaces=2 
-horizontal_line_character="-"
-open_brackets="("
-close_brackets=")"
+spaces=1 
+horizontal_line_character="~"
+open_brackets="{"
+close_brackets="}"
 #---------------------------------------------------------------------------------------
 ####FUNCTIONS####
 #---------------------------------------------------------------------------------------
@@ -22,7 +22,8 @@ scan-option ()
 		add) shift; add-entries "$@";;
 		del) shift; del-entries "$@";;
 		done) display-done;; 
-		help) get-help;; esac
+		help) get-help;;
+		erase) shift; erase-entries "$@";; esac
 }
 number-of-lines () # takes file ($1) and writes it to $number_of_lines
 {
@@ -43,6 +44,11 @@ sort-lines ()
 		n-line $1 $i
 		echo $nline >> $2
 	done
+}
+# takes filename ($1) and erases its content
+erase ()
+{
+	echo -n "" > $1
 }
 #-------------------------------------------------------------------------------------
 ####OPTION'S IMPLEMENTATIONS####
@@ -66,16 +72,16 @@ check-for-empty-input ()
 
 render-empty ()
 {
-	echo " -- " > $output
-	echo "(  )" >> $output
-	echo " -- " >> $output
+	echo " $horizontal_line_character$horizontal_line_character " > $output
+	echo "$open_brackets  $close_brackets" >> $output
+	echo " $horizontal_line_character$horizontal_line_character " >> $output
 }
 write-n-symbols () #write symbol ($1) n ($2) times to $output file
 {
 	n="$2"
         while [ "$n" != "0" ]
         do
-                echo -n "$1" >> $output
+                echo -en "$1" >> $output
                 n=$((n-1))
         done
 }
@@ -120,7 +126,7 @@ calculate-spaces () #takes line's lenght ($1) and calculates spaces relative to 
 render-horizontal-line () #calculates and writes underline for upper and bottom borders
 {
 	horizontal_line_lenght=`expr $spaces + $spaces + $max_lenght`
-	echo -n " " >> $output
+	write-n-symbols " " $spaces
 	write-n-symbols "$horizontal_line_character" "$horizontal_line_lenght"
 	echo "" >> $output
 }
@@ -185,6 +191,7 @@ add-entries ()
 	do
 		echo $entry >> $todofile
 	done
+	echo "Tasks has been added to your todolist"
 }
 #--------------------------------------------------
 ####DEL OPTION####
@@ -258,6 +265,7 @@ del-entries ()
 	construct-array "$@"
 	append-deleted-tasks-to-done "$@"
 	delete-tasks
+	echo "Tasks has been deleted"
 }
 #--------------------------------------------------
 ####HELP OPTION####
@@ -267,14 +275,32 @@ get-help ()
 {
 	echo "This is TODO programm, written by Ilzichio"
 	echo "Language: Bash"
+	echo "--------------"
 	echo "Usage: bash todo.sh < |add|del|done|help> < |arg1,arg2,arg2>"
 	echo "todo.sh - display your todo-list"
 	echo "todo.sh done - display your done-list"
 	echo "todo.sh add <entry1,entry2...entryN> - add N entries to your todo-list"
 	echo "todo.sh del <entry1,entry2...entryN> - delete entries by their order number"
 	echo "!!! Deleted lines automatically append to your done-list !!!"
+	echo "todo.sh erase < todo|done > - erase all entries from todolist or donelist"
 	echo "todo.sh help - programm's commands and general info (you did that right now)"
 }	
+#--------------------------------------------------
+####ERASING OPTION####
+#--------------------------------------------------
+erase-entries ()
+{
+	if [ "$1" = "todo" ]
+	then
+		erase $todofile
+	fi
+	if [ "$1" = "done" ]
+	then
+		erase $donefile
+	fi
+	echo "$1's entries has been erased"
+}
+	
 #--------------------------------------------------
 ####MAIN#### 
 #--------------------------------------------------
