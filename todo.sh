@@ -20,7 +20,7 @@ scan-option ()
 		add) shift; add-entries "$@";;
 		del) shift; del-entries "$@";;
 		mv) shift; mv-entries "$@";;
-		edit) vim $todofile;;
+		edit) $EDITOR $todofile;;
 		stat) display-statistics;;
 		done) display-done;; 
 		help) get-help;;
@@ -239,7 +239,8 @@ get-help ()
 	echo "!!! Deleted lines automatically append to your done-list !!!"
 	echo "todo.sh erase < todo|done > - erase all entries from todolist or donelist"
 	echo "todo.sh mv <entry1> <entry2>  - change places of entries"
-	echo "todo.sh stat - print statistics"
+	echo "todo.sh stat - print statistics" 
+	echo "todo.sh edit - edit todolist with your $EDITOR"
 	echo "todo.sh help - programm's commands and general info (you did that right now)"
 }	
 #--------------------------------------------------
