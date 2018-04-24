@@ -5,11 +5,9 @@
 todofile=$TODO_FILE
 donefile=$DONE_FILE
 #
-# Todo-list's appearance (change them however you want)
-spaces=1 
-horizontal_line_character="~"
-open_brackets="{"
-close_brackets="}"
+# Todo-list's appearance
+top_horizontal_line_character="-"
+bottom_horizontal_line_character='-'
 #---------------------------------------------------------------------------------------
 ####FUNCTIONS####
 #---------------------------------------------------------------------------------------
@@ -21,6 +19,9 @@ scan-option ()
 		"") display-todo;;
 		add) shift; add-entries "$@";;
 		del) shift; del-entries "$@";;
+		mv) shift; mv-entries "$@";;
+		edit) vim $todofile;;
+		stat) display-statistics;;
 		done) display-done;; 
 		help) get-help;;
 		erase) shift; erase-entries "$@";; esac
@@ -34,17 +35,6 @@ n-line ()
 {
 	nline=$(head -$2 $1 | tail -1)
 }
-# sorts input file ($1) and and outputs to file ($2)
-sort-lines ()
-{
-	number-of-lines $1
-	for i in `seq 1 $number_of_lines`
-	do
-		echo -n "$i. " >> $2
-		n-line $1 $i
-		echo $nline >> $2
-	done
-}
 # takes filename ($1) and erases its content
 erase ()
 {
@@ -53,124 +43,17 @@ erase ()
 #-------------------------------------------------------------------------------------
 ####OPTION'S IMPLEMENTATIONS####
 #-------------------------------------------------------------------------------------
-# RENDERING
-#------------------------
-specify-io () 
-{
-	input=$1
-	output=$2
-}
-check-for-empty-input ()
-{
-	if [ ! -s $input ]
-	then
-		empty=true
-	else 
-		empty=false
-	fi
-}
 
-render-empty ()
-{
-	echo " $horizontal_line_character$horizontal_line_character " > $output
-	echo "$open_brackets  $close_brackets" >> $output
-	echo " $horizontal_line_character$horizontal_line_character " >> $output
-}
-write-n-symbols () #write symbol ($1) n ($2) times to $output file
-{
-	n="$2"
-        while [ "$n" != "0" ]
-        do
-                echo -en "$1" >> $output
-                n=$((n-1))
-        done
-}
-
-calculate-lenght () #calculates lenght of line ($1) and writes in to $calculated_lenght
-{
-	line="$1"	
-	calculated_lenght=${#line}
-}
-
-put-lenghts-in-array () #fills array "lenghts" according to lines lenghts ($1 - working file)
-{
-	number-of-lines $1
-	for i in `seq 1 $number_of_lines`
-	do
-		n-line $input $i
-		calculate-lenght "$nline"
-		lenghts[$i]=$calculated_lenght
-	done
-}
-
-find-max-lenght () #calculate max line's lenght in $input and write it to $max_lenght ($1-w.file)
-{
-	max_lenght=${lenghts[1]}
-	number-of-lines $1
-	for j in `seq 2 $number_of_lines`
-	do
-		next=${lenghts[j]}
-		if [ $next -ge $max_lenght ] 
-		then	
-			max_lenght=$next
-		fi	
-	done		
-}
-
-calculate-spaces () #takes line's lenght ($1) and calculates spaces relative to $max_lenght
-{
-	lines_lenght=$1
-	calculated_spaces=`expr $max_lenght - $lines_lenght + 2`
-}
-
-render-horizontal-line () #calculates and writes underline for upper and bottom borders
-{
-	horizontal_line_lenght=`expr $spaces + $spaces + $max_lenght`
-	write-n-symbols " " $spaces
-	write-n-symbols "$horizontal_line_character" "$horizontal_line_lenght"
-	echo "" >> $output
-}
-
-render () #input-file ($1) output-file ($2)
-{
-	specify-io $1 $2
-	check-for-empty-input
-	if [ "$empty" = "true" ]
-	then
-		render-empty
-	else
-		put-lenghts-in-array $input
-		find-max-lenght $input
-		render-horizontal-line	
-		number-of-lines $input
-		for l in `seq 1 $number_of_lines`
-		do
-			echo -n $open_brackets >> $output
-			write-n-symbols " " "$spaces"
-			n-line $input $l
-			echo -n "$nline" >> $output
-			s=${lenghts[l]}
-			calculate-spaces "$s"
-			cal_spaces="$calculated_spaces"	
-			write-n-symbols " " "$cal_spaces"
-			echo $close_brackets >> $output
-		done
-		render-horizontal-line
-	fi
-}
 #-------------------------
 ####NONE/DONE OPTIONS####
-#---------------------------------------------------
+#-------------------------
 # displays (rendered and sorted) file ($1)
 display-list ()
 {
-	touch sorted
-	sort-lines $1 sorted
-	touch rendered
-	render sorted rendered
-	cat rendered
-	rm sorted
-	rm rendered
+	list="$1"
+	echo "$top_horizontal_line_character$top_horizontal_line_character$top_horizontal_line_character"
+	cat -n "$list"
+	echo "$bottom_horizontal_line_character$bottom_horizontal_line_character$bottom_horizontal_line_character"
 }
 
 display-todo ()
@@ -183,6 +66,19 @@ display-done ()
 	display-list $donefile
 }
 #--------------------------------------------------
+####STATISTICS####
+#--------------------------------------------------
+display-statistics ()
+{
+	number-of-lines "$todofile"
+	echo "---"
+	echo "Active tasks: $number_of_lines"
+	number-of-lines "$donefile"
+	echo "Done tasks: $number_of_lines"
+	echo "---"
+}
+
+#--------------------------------------------------
 ####ADD OPTION####
 #--------------------------------------------------
 add-entries ()
@@ -194,6 +90,65 @@ add-entries ()
 	echo "Tasks has been added to your todolist"
 }
 #--------------------------------------------------
+####MV OPTION####
+#--------------------------------------------------
+# The option changes position of 2 input entries
+sort ()
+{
+	if [ -z "$1" ] || [ -z "$2" ]
+	then
+		echo "Invalid number of arguments"
+		exit 1
+	elif [ "$1" == "$2" ]
+	then
+		echo "Arguments can't be equal"
+		exit 1
+	fi
+	entry1_pos="$1"
+	entry2_pos="$2"
+	if [[ "$entry1_pos" -lt "1" ]] || [[ "$entry1_pos" -gt "$number_of_lines" ]]
+	then
+		echo "Arguments are out of range"
+		exit 1
+	elif [[ "$entry2_pos" -lt "1" ]] || [[ "$entry2_pos" -gt "$number_of_lines" ]]
+	then
+		echo "Arguments are out of range"
+		exit 1
+	fi
+
+}
+
+		
+mv-entries ()
+{
+	number-of-lines $todofile
+	sort "$1" "$2"
+	tmp_file="/tmp/f"
+	touch $tmp_file
+	n-line "$todofile" "$entry1_pos" 
+	entry1="$nline"
+	n-line "$todofile" "$entry2_pos"
+	entry2="$nline"
+	unset nline
+	for i in `seq 1 $number_of_lines`
+	do
+		if [[ "$i" != "$entry1_pos" && "$i" != "$entry2_pos" ]]
+		then
+			n-line "$todofile" "$i"
+			echo "$nline" >> $tmp_file	
+		elif [ "$i" == "$entry2_pos" ]
+		then
+			echo "$entry1" >> $tmp_file
+			echo "$entry2" >> $tmp_file
+			i=$((i+1))
+		fi
+	
+	done
+	mv $tmp_file $todofile
+	echo "Positions of entry $entry1_pos and $entry2_pos has been changed"
+	unset entry1 entry2 entry1_pos entry2_pos nline
+}
+
 ####DEL OPTION####
 count-arguments ()
 {
@@ -283,6 +238,8 @@ get-help ()
 	echo "todo.sh del <entry1,entry2...entryN> - delete entries by their order number"
 	echo "!!! Deleted lines automatically append to your done-list !!!"
 	echo "todo.sh erase < todo|done > - erase all entries from todolist or donelist"
+	echo "todo.sh mv <entry1> <entry2>  - change places of entries"
+	echo "todo.sh stat - print statistics"
 	echo "todo.sh help - programm's commands and general info (you did that right now)"
 }	
 #--------------------------------------------------

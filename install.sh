@@ -22,5 +22,5 @@ add "export" "TODO_FILE" "$dir/todo"
 echo 'variable $TODO_FILE added to your .bashrc'
 add "export" "DONE_FILE" "$dir/done"
 echo 'variable $DONE_FILE added to your .bashrc'
-add "alias" "todo" "bash $dir/todo.sh"
-echo 'alias "todo" added to your .bashrc'
+ln -s $dir/todo.sh /usr/bin/todo
+echo "Symbolic link added to your /usr/bin/todo
