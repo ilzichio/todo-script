@@ -2,13 +2,13 @@ This is a small and simple TODO script written in Bash.
 
 <img src="script_in_action.gif">  
 
-##Installation  
+## Installation  
 
 ```
 	$ bash install.sh
 ```  
 
-##Available commands  
+## Available commands  
 
 ```  
 	$ todo help  
