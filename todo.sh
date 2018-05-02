@@ -20,7 +20,7 @@ scan-option ()
 		add) shift; add-entries "$@";;
 		del) shift; del-entries "$@";;
 		mv) shift; mv-entries "$@";;
-		edit) vim $todofile;;
+		edit) $EDITOR $todofile;;
 		stat) display-statistics;;
 		done) display-done;; 
 		help) get-help;;
