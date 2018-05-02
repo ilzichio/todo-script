@@ -20,7 +20,7 @@ scan-option ()
 		add) shift; add-entries "$@";;
 		del) shift; del-entries "$@";;
 		mv) shift; mv-entries "$@";;
-		edit) $EDITOR $todofile;;
+		edit) vim $todofile;;
 		stat) display-statistics;;
 		done) display-done;; 
 		help) get-help;;
@@ -33,7 +33,7 @@ number-of-lines () # takes file ($1) and writes it to $number_of_lines
 # taking n ($2) line out of file ($1) and writing it to $nline
 n-line () 
 {
-	nline=$(head -$2 $1 | tail -1)
+	nline=$(sed "${2}q;d" $1)
 }
 # takes filename ($1) and erases its content
 erase ()
@@ -52,7 +52,11 @@ display-list ()
 {
 	list="$1"
 	echo "$top_horizontal_line_character$top_horizontal_line_character$top_horizontal_line_character"
-	cat -n "$list"
+	number-of-lines "$list"
+	for i in `seq 1 $number_of_lines`
+	do
+		echo "$i. $(sed "${i}q;d" $list)"
+	done		
 	echo "$bottom_horizontal_line_character$bottom_horizontal_line_character$bottom_horizontal_line_character"
 }
 
@@ -239,8 +243,7 @@ get-help ()
 	echo "!!! Deleted lines automatically append to your done-list !!!"
 	echo "todo.sh erase < todo|done > - erase all entries from todolist or donelist"
 	echo "todo.sh mv <entry1> <entry2>  - change places of entries"
-	echo "todo.sh stat - print statistics" 
-	echo "todo.sh edit - edit todolist with your $EDITOR"
+	echo "todo.sh stat - print statistics"
 	echo "todo.sh help - programm's commands and general info (you did that right now)"
 }	
 #--------------------------------------------------
