@@ -232,20 +232,20 @@ del-entries ()
 
 get-help ()
 {
-	echo "This is TODO programm, written by Ilzichio"
-	echo "Language: Bash"
-	echo "--------------"
-	echo "Usage: bash todo.sh < |add|del|done|help> < |arg1,arg2,arg2>"
-	echo "todo.sh - display your todo-list"
-	echo "todo.sh done - display your done-list"
-	echo "todo.sh add <entry1,entry2...entryN> - add N entries to your todo-list"
-	echo "todo.sh del <entry1,entry2...entryN> - delete entries by their order number"
-	echo "!!! Deleted lines automatically append to your done-list !!!"
-	echo "todo.sh erase < todo|done > - erase all entries from todolist or donelist"
-	echo "todo.sh mv <entry1> <entry2>  - change places of entries"
-	echo "todo.sh stat - print statistics"
-	echo "todo.sh help - programm's commands and general info (you did that right now)"
-}	
+printf "This is TODO programm, written by Ilzichio
+Language: Bash
+--------------
+Usage: bash todo.sh < |add|del|done|help> < |arg1,arg2,arg2>
+todo.sh - display your todo-list
+todo.sh done - display your done-list
+todo.sh add <entry1,entry2...entryN> - add N entries to your todo-list
+todo.sh del <entry1,entry2...entryN> - delete entries by their order number
+!!! Deleted lines automatically append to your done-list !!!
+todo.sh erase < todo|done > - erase all entries from todolist or donelist
+todo.sh mv <entry1> <entry2>  - change places of entries
+todo.sh stat - print statistics
+todo.sh help - programm's commands and general info (you did that right now)"
+}
 #--------------------------------------------------
 ####ERASING OPTION####
 #--------------------------------------------------
