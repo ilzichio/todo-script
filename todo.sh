@@ -244,7 +244,8 @@ todo.sh del <entry1,entry2...entryN> - delete entries by their order number
 todo.sh erase < todo|done > - erase all entries from todolist or donelist
 todo.sh mv <entry1> <entry2>  - change places of entries
 todo.sh stat - print statistics
-todo.sh help - programm's commands and general info (you did that right now)"
+todo.sh help - programm's commands and general info (you did that right now)
+"
 }
 #--------------------------------------------------
 ####ERASING OPTION####
